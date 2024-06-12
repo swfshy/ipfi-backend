@@ -1,3 +1,5 @@
+console.log('Testing for console log');
+
 // Update the URL accordingly
 const backendEndpoint = 'https://cd70-114-4-100-19.ngrok-free.app/conversions';
 
@@ -88,38 +90,52 @@ async function captureData() {
 // Make the POST request when the page loads
 document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
-  console.log('host', requestData.host);
-  console.log('full url', requestData.full_url);
-  console.log('utm', requestData.utmParams);
+  console.log('Host:', requestData.host);
+  console.log('Full URL:', requestData.full_url);
+  console.log('UTM Parameters:', requestData.utmParams);
   console.log('Request Data:', requestData); // Log the captured data
   postData(backendEndpoint, requestData)
     .then(response => {
-      // Handle the response if needed
-      // console.log('Response:', response);
+      console.log('Response:', response);
     });
 });
 
 // Function to make a POST request
-function postData(url, data) {
-  return fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Client-Host': data.host,
-      'X-Client-Domain': data.domain,
-      'X-Access-Time': data.access_time,
-      'User-Agent': data.user_agent,
-      'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
-      'X-WebGL-Vendor': data.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
-      'X-Screen-Width': data.webGLParams.screenResolution.width,
-      'X-Screen-Height': data.webGLParams.screenResolution.height,
-      'X-Avail-Screen-Width': data.webGLParams.screenResolution.availWidth,
-      'X-Avail-Screen-Height': data.webGLParams.screenResolution.availHeight,
-      'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
-      'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .catch(error => console.error('Error:', error));
+async function postData(url, data) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Client-Host': data.host,
+        'X-Client-Domain': data.domain,
+        'X-Access-Time': data.access_time,
+        'User-Agent': data.user_agent,
+        'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
+        'X-WebGL-Vendor': data.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
+        'X-Screen-Width': data.webGLParams.screenResolution.width,
+        'X-Screen-Height': data.webGLParams.screenResolution.height,
+        'X-Avail-Screen-Width': data.webGLParams.screenResolution.availWidth,
+        'X-Avail-Screen-Height': data.webGLParams.screenResolution.availHeight,
+        'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
+        'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth
+      },
+      body: JSON.stringify(data)
+    });
+
+    // Log the response to debug
+    console.log('Raw Response:', response);
+
+    // Check if the response status is OK and if the response body is JSON
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      return jsonResponse;
+    } else {
+      // Handle non-OK response
+      console.error('Server Error:', response.statusText);
+      throw new Error('Server responded with an error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
