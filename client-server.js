@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 console.log('Testing for console log');
+=======
+console.log('testing for console log');
+>>>>>>> 05d9c4511d92bfc530364f78d6f87c9feee642ab
 
 // Update the URL accordingly
 const backendEndpoint = 'https://cd70-114-4-100-19.ngrok-free.app/conversions';
