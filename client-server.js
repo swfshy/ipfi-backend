@@ -86,6 +86,8 @@ async function captureData() {
 // Make the POST request when the page loads
 document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
+  console.log('host', requestData.host);
+  console.log('domain', requestData.domain);
   console.log('utm', requestData.utmParams);
   postData(backendEndpoint, requestData)
     .then(response => {
