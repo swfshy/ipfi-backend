@@ -64,6 +64,7 @@ function getUTMParams() {
 async function captureData() {
   const host = window.location.host;
   const domain = getDomainFromHost(host);
+  const fullURL = window.location.href;
 
   // Initialize xAccessTime with current date and time in Asia/Jakarta timezone
   const jakartaOptions = { timeZone: 'Asia/Jakarta', hour12: false };
@@ -76,6 +77,7 @@ async function captureData() {
   return {
     host: host,
     domain: domain,
+    fullUrl: fullURL,
     access_time: xAccessTime,
     user_agent: userAgent,
     webGLParams: webGLParams,
@@ -88,6 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
   console.log('host', requestData.host);
   console.log('domain', requestData.domain);
+  consolo.log('full url', requestData.fullUrl);
   console.log('utm', requestData.utmParams);
   postData(backendEndpoint, requestData)
     .then(response => {
