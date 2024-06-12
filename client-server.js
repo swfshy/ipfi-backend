@@ -1,4 +1,3 @@
-// Update the URL accordingly
 const backendEndpoint = 'https://cd70-114-4-100-19.ngrok-free.app/conversions';
 
 // Function to extract domain from the host
@@ -48,6 +47,18 @@ function getWebGLParams() {
   return params;
 }
 
+// Function to extract UTM parameters from URL
+function getUTMParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const utmParams = {};
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+    if (urlParams.has(param)) {
+      utmParams[param] = urlParams.get(param);
+    }
+  });
+  return utmParams;
+}
+
 // Capture the necessary data
 async function captureData() {
   const host = window.location.host;
@@ -59,13 +70,15 @@ async function captureData() {
 
   const userAgent = navigator.userAgent;
   const webGLParams = getWebGLParams();
+  const utmParams = getUTMParams();
 
   return {
     host: host,
     domain: domain,
     access_time: xAccessTime,
     user_agent: userAgent,
-    webGLParams: webGLParams
+    webGLParams: webGLParams,
+    utmParams: utmParams
   };
 }
 
@@ -75,29 +88,37 @@ document.addEventListener('DOMContentLoaded', async () => {
   postData(backendEndpoint, requestData)
     .then(response => {
       // Handle the response if needed
-      // console.log('Response:', response);
+      console.log('Response:', response);
     });
 });
 
 // Function to make a POST request
 function postData(url, data) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-Client-Host': data.host,
+    'X-Client-Domain': data.domain,
+    'X-Access-Time': data.access_time,
+    'User-Agent': data.user_agent,
+    'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
+    'X-WebGL-Vendor': data.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
+    'X-Screen-Width': data.webGLParams.screenResolution.width,
+    'X-Screen-Height': data.webGLParams.screenResolution.height,
+    'X-Avail-Screen-Width': data.webGLParams.screenResolution.availWidth,
+    'X-Avail-Screen-Height': data.webGLParams.screenResolution.availHeight,
+    'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
+    'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth,
+    'X-UTM': data.utmParams
+  };
+
+  // Add UTM parameters to headers
+  for (const [key, value] of Object.entries(data.utmParams)) {
+    headers[`X-${key.replace(/_/g, '-')}`] = value;
+  }
+
   return fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Client-Host': data.host,
-      'X-Client-Domain': data.domain,
-      'X-Access-Time': data.access_time,
-      'User-Agent': data.user_agent,
-      'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
-      'X-WebGL-Vendor': data.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
-      'X-Screen-Width': data.webGLParams.screenResolution.width,
-      'X-Screen-Height': data.webGLParams.screenResolution.height,
-      'X-Avail-Screen-Width': data.webGLParams.screenResolution.availWidth,
-      'X-Avail-Screen-Height': data.webGLParams.screenResolution.availHeight,
-      'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
-      'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth
-    },
+    headers: headers,
     body: JSON.stringify(data)
   })
   .then(response => response.json())
