@@ -77,7 +77,7 @@ async function captureData() {
   return {
     host: host,
     domain: domain,
-    fullUrl: fullURL,
+    full_url: fullURL,
     access_time: xAccessTime,
     user_agent: userAgent,
     webGLParams: webGLParams,
@@ -90,8 +90,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
   console.log('host', requestData.host);
   console.log('domain', requestData.domain);
-  consolo.log('full url', requestData.fullUrl);
+  consolo.log('full url', requestData.full_url);
   console.log('utm', requestData.utmParams);
+  console.log('Request Data:', requestData); // Log the captured data
   postData(backendEndpoint, requestData)
     .then(response => {
       // Handle the response if needed
