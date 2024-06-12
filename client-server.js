@@ -1,3 +1,4 @@
+// Update the URL accordingly
 const backendEndpoint = 'https://cd70-114-4-100-19.ngrok-free.app/conversions';
 
 // Function to extract domain from the host
@@ -71,7 +72,7 @@ async function captureData() {
   const userAgent = navigator.userAgent;
   const webGLParams = getWebGLParams();
   const utmParams = getUTMParams();
-
+  
   return {
     host: host,
     domain: domain,
@@ -85,40 +86,33 @@ async function captureData() {
 // Make the POST request when the page loads
 document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
+  console.log('utm', requestData.utmParams);
   postData(backendEndpoint, requestData)
     .then(response => {
       // Handle the response if needed
-      console.log('Response:', response);
+      // console.log('Response:', response);
     });
 });
 
 // Function to make a POST request
 function postData(url, data) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-Client-Host': data.host,
-    'X-Client-Domain': data.domain,
-    'X-Access-Time': data.access_time,
-    'User-Agent': data.user_agent,
-    'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
-    'X-WebGL-Vendor': data.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
-    'X-Screen-Width': data.webGLParams.screenResolution.width,
-    'X-Screen-Height': data.webGLParams.screenResolution.height,
-    'X-Avail-Screen-Width': data.webGLParams.screenResolution.availWidth,
-    'X-Avail-Screen-Height': data.webGLParams.screenResolution.availHeight,
-    'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
-    'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth,
-    'X-UTM': data.utmParams
-  };
-
-  // Add UTM parameters to headers
-  for (const [key, value] of Object.entries(data.utmParams)) {
-    headers[`X-${key.replace(/_/g, '-')}`] = value;
-  }
-
   return fetch(url, {
     method: 'POST',
-    headers: headers,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Client-Host': data.host,
+      'X-Client-Domain': data.domain,
+      'X-Access-Time': data.access_time,
+      'User-Agent': data.user_agent,
+      'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
+      'X-WebGL-Vendor': data.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
+      'X-Screen-Width': data.webGLParams.screenResolution.width,
+      'X-Screen-Height': data.webGLParams.screenResolution.height,
+      'X-Avail-Screen-Width': data.webGLParams.screenResolution.availWidth,
+      'X-Avail-Screen-Height': data.webGLParams.screenResolution.availHeight,
+      'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
+      'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth
+    },
     body: JSON.stringify(data)
   })
   .then(response => response.json())
