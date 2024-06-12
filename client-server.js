@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
   console.log('host', requestData.host);
   console.log('domain', requestData.domain);
-  consolo.log('full url', requestData.full_url);
+  console.log('full url', requestData.full_url);
   console.log('utm', requestData.utmParams);
   console.log('Request Data:', requestData); // Log the captured data
   postData(backendEndpoint, requestData)
