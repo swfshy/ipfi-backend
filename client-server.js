@@ -1,4 +1,4 @@
-const backendEndpoint = 'https://8f97-114-4-100-19.ngrok-free.app/conversions';
+const backendEndpoint = 'https://cd70-114-4-100-19.ngrok-free.app/conversions';
 
 // Function to extract domain from the host
 function getDomainFromHost(host) {
