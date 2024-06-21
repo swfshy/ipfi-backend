@@ -1,7 +1,7 @@
 console.log('Testing for console log');
 
 // Update the URL accordingly
-const backendEndpoint = 'https://ipfication.onrender.com/conversions';
+const backendEndpoint = 'https://19ec-120-188-67-26.ngrok-free.app/conversions';
 
 // Function to extract domain from the host
 function getDomainFromHost(host) {
