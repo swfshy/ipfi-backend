@@ -102,7 +102,7 @@ async function runDataCapture() {
 
 // Check if cookie consent is true and run the script
 const checkCookieConsentAndRun = () => {
-  const cookieConsent = localStorage.getItem('cookieConsent') === 'true';
+  const cookieConsent = localStorage.getItem('cookieAccepted') === 'true';
   if (cookieConsent) {
       console.log('Cookie consent is true, proceeding with script execution');
       runDataCapture();
@@ -116,8 +116,8 @@ checkCookieConsentAndRun();
 
 // Detect changes to cookieConsent in localStorage
 window.addEventListener('storage', (event) => {
-  if (event.key === 'cookieConsent') {
-      console.log('cookieConsent changed, checking condition');
+  if (event.key === 'cookieAccepted') {
+      console.log('cookieAccepted changed, checking condition');
       checkCookieConsentAndRun();
   }
 });
