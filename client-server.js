@@ -104,10 +104,10 @@ async function runDataCapture() {
 const checkCookieConsentAndRun = () => {
   const cookieConsent = localStorage.getItem('cookieAccepted') === 'true';
   if (cookieConsent) {
-      console.log('1 - Cookie consent is true, proceeding with script execution');
+      console.log('Kue === Acc');
       runDataCapture();
   } else {
-      console.log('2 - Cookie consent is false, script will not run');
+      console.log('Kue === Dec');
   }
 };
 
