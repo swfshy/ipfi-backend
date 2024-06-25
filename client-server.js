@@ -87,8 +87,7 @@ async function captureData() {
   };
 }
 // Check cookie consent
-const cookieConsent = localStorage.getItem('cookieAccepted') === 'true';
-if (cookieConsent) {
+if (cookieAccepted) {
   console.log('Cookie consent is true, proceeding with script execution');
 
   // Make the POST request when the page loads
