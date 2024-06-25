@@ -1,7 +1,7 @@
 console.log('Testing for console log');
 
 // Update the URL accordingly
-const backendEndpoint = 'https://cd70-114-4-100-19.ngrok-free.app/conversions';
+const backendEndpoint = 'https://9432-114-4-100-19.ngrok-free.app/conversions';
 
 // Function to extract domain from the host
 function getDomainFromHost(host) {
@@ -86,19 +86,27 @@ async function captureData() {
     utmParams: utmParams
   };
 }
+// Check cookie consent
+const cookieConsent = localStorage.getItem('cookieConsent') === 'true';
+if (cookieConsent) {
+  console.log('Cookie consent is true, proceeding with script execution');
 
-// Make the POST request when the page loads
-document.addEventListener('DOMContentLoaded', async () => {
-  const requestData = await captureData();
-  console.log('Host:', requestData.host);
-  console.log('Full URL:', requestData.full_url);
-  console.log('UTM Parameters:', requestData.utmParams);
-  console.log('Request Data:', requestData); // Log the captured data
-  postData(backendEndpoint, requestData)
-    .then(response => {
-      console.log('Response:', response);
-    });
-});
+  // Make the POST request when the page loads
+  document.addEventListener('DOMContentLoaded', async () => {
+    const requestData = await captureData();
+    console.log('Host:', requestData.host);
+    console.log('Full URL:', requestData.full_url);
+    console.log('UTM Parameters:', requestData.utmParams);
+    console.log('Access Time:', requestData.access_time)
+    console.log('Request Data:', requestData); // Log the captured data
+    postData(backendEndpoint, requestData)
+      .then(response => {
+        console.log('Response:', response);
+      });
+  });
+} else {
+  console.log('Cookie consent is false, script will not run');
+}
 
 // Function to make a POST request
 async function postData(url, data) {
