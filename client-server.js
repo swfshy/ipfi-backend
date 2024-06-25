@@ -86,29 +86,41 @@ async function captureData() {
     utmParams: utmParams
   };
 }
-// Check cookie consent
-const cookieAccepted = localStorage.getItem('cookieAccepted') === 'true';
-console.log(cookieAccepted);
-console.log(localStorage.getItem('cookieAccepted') === 'true');
-if (cookieAccepted) {
-  console.log('Cookie consent is true, proceeding with script execution');
 
-  // Make the POST request when the page loads
-  document.addEventListener('DOMContentLoaded', async () => {
-    const requestData = await captureData();
-    console.log('Host:', requestData.host);
-    console.log('Full URL:', requestData.full_url);
-    console.log('UTM Parameters:', requestData.utmParams);
-    console.log('Access Time:', requestData.access_time)
-    console.log('Request Data:', requestData); // Log the captured data
-    postData(backendEndpoint, requestData)
+// Function to run the data capture and POST logic
+async function runDataCapture() {
+  const requestData = await captureData();
+  console.log('Host:', requestData.host);
+  console.log('Full URL:', requestData.full_url);
+  console.log('UTM Parameters:', requestData.utmParams);
+  console.log('Request Data:', requestData); // Log the captured data
+  postData(backendEndpoint, requestData)
       .then(response => {
-        console.log('Response:', response);
+          console.log('Response:', response);
       });
-  });
-} else {
-  console.log('Cookie consent is false, script will not run');
 }
+
+// Check if cookie consent is true and run the script
+const checkCookieConsentAndRun = () => {
+  const cookieConsent = localStorage.getItem('cookieConsent') === 'true';
+  if (cookieConsent) {
+      console.log('Cookie consent is true, proceeding with script execution');
+      runDataCapture();
+  } else {
+      console.log('Cookie consent is false, script will not run');
+  }
+};
+
+// Initial check on page load
+checkCookieConsentAndRun();
+
+// Detect changes to cookieConsent in localStorage
+window.addEventListener('storage', (event) => {
+  if (event.key === 'cookieConsent') {
+      console.log('cookieConsent changed, checking condition');
+      checkCookieConsentAndRun();
+  }
+});
 
 // Function to make a POST request
 async function postData(url, data) {
