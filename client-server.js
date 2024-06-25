@@ -122,6 +122,16 @@ window.addEventListener('storage', (event) => {
   }
 });
 
+// Observe changes to the cookieConsent item in localStorage within the same document
+const originalSetItem = localStorage.setItem;
+localStorage.setItem = function(key, value) {
+    originalSetItem.apply(this, arguments);
+    if (key === 'cookieAccepted') {
+        console.log('cookieConsent changed within the same document, checking condition');
+        checkCookieConsentAndRun();
+    }
+};
+
 // Function to make a POST request
 async function postData(url, data) {
   try {
