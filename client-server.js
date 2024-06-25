@@ -87,7 +87,7 @@ async function captureData() {
   };
 }
 // Check cookie consent
-const cookieConsent = localStorage.getItem('cookieConsent') === 'true';
+const cookieConsent = localStorage.getItem('cookieAccepted') === 'true';
 if (cookieConsent) {
   console.log('Cookie consent is true, proceeding with script execution');
 
