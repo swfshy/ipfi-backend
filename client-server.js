@@ -88,6 +88,8 @@ async function captureData() {
 }
 // Check cookie consent
 const cookieAccepted = localStorage.getItem('cookieAccepted') === 'true';
+console.log(cookieAccepted);
+console.log(localStorage.getItem('cookieAccepted') === 'true');
 if (cookieAccepted) {
   console.log('Cookie consent is true, proceeding with script execution');
 
