@@ -75,6 +75,7 @@ async function captureData() {
   const userAgent = navigator.userAgent;
   const webGLParams = getWebGLParams();
   const utmParams = getUTMParams();
+  console.log(new Date());
   
   return {
     host: host,
@@ -93,6 +94,7 @@ async function runDataCapture() {
   console.log('Host:', requestData.host);
   console.log('Full URL:', requestData.full_url);
   console.log('UTM Parameters:', requestData.utmParams);
+  console.log(requestData.utmParams['utm_campaign']);
   console.log('Request Data:', requestData); // Log the captured data
   postData(backendEndpoint, requestData)
       .then(response => {
