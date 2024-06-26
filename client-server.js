@@ -1,7 +1,7 @@
 console.log('Testing for console log');
 
 // Update the URL accordingly
-const backendEndpoint = 'https://9432-114-4-100-19.ngrok-free.app/conversions';
+const backendEndpoint = 'https://88e4-114-10-114-55.ngrok-free.app/conversions';
 
 // Function to extract domain from the host
 function getDomainFromHost(host) {
