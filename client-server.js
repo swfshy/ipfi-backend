@@ -72,35 +72,37 @@ async function captureData() {
   };
 }
 
-// Function to run the data capture and POST logic
-async function runDataCapture() {
+// Make the POST request when the page loads
+document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
-  console.log('Host:', requestData.host);
-  console.log('Full URL:', requestData.full_url);
-  console.log('UTM Parameters:', requestData.utmParams);
-  console.log(requestData.utmParams['utm_campaign']);
-  console.log('Request Data:', requestData); // Log the captured data
   postData(backendEndpoint, requestData)
-      .then(response => {
-          console.log('Response:', response);
-      });
-}
+    .then(response => {
+      console.log('Response:', response);
+    });
+});
 
-function checkCookieConsentAndObserve(consentVarName) {
+function checkCookieConsentAndObserve(consentVarName, userUUID) {
   const checkCookieConsentAndRun = () => {
     const cookieAccepted = localStorage.getItem(consentVarName);
     if (cookieAccepted) {
-        console.log('Kue === Acc');
-        runDataCapture();
+      console.log('Kue === Acc');
+      const userUUIDvalue = localStorage.getItem(userUUID);
+      if (userUUIDvalue) {
+        console.log('Saved UUID:', userUUIDvalue);
+        // Call a function or perform an action with the saveduuid value here
+      } else {
+        console.log('Saved UUID not found');
+      }
+      runDataCapture();
     } else {
-        console.log('Kue === Dec');
+      console.log('Kue === Dec');
     }
   };
 
   // Initial check on page load
   checkCookieConsentAndRun();
 
-  // Observe changes to the cookieConsent item in localStorage within the same document
+  // Observe changes to the consentVarName item in localStorage within the same document
   const originalSetItem = localStorage.setItem;
   localStorage.setItem = function(key, value) {
     originalSetItem.apply(this, arguments);
