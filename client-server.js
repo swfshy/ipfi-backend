@@ -93,7 +93,6 @@ function checkCookieConsentAndObserve(consentVarName, userUUID) {
       } else {
         console.log('Saved UUID not found');
       }
-      runDataCapture();
     } else {
       console.log('Kue === Dec');
     }
