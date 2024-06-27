@@ -1,16 +1,7 @@
 console.log('Testing for console log');
 
 // Update the URL accordingly
-const backendEndpoint = 'https://88e4-114-10-114-55.ngrok-free.app/conversions';
-
-// Function to extract domain from the host
-function getDomainFromHost(host) {
-  const parts = host.split('.');
-  if (parts.length > 2) {
-    parts.shift(); // remove the subdomain part
-  }
-  return parts.join('.');
-}
+const backendEndpoint = 'https://5875-114-10-69-50.ngrok-free.app/conversions';
 
 // Function to get WebGL parameters
 function getWebGLParams() {
@@ -65,24 +56,14 @@ function getUTMParams() {
 // Capture the necessary data
 async function captureData() {
   const host = window.location.host;
-  const domain = getDomainFromHost(host);
   const fullURL = window.location.href;
-
-  // Initialize xAccessTime with current date and time in Asia/Jakarta timezone
-  const jakartaOptions = { timeZone: 'Asia/Jakarta', hour12: false };
-  const xAccessTime = new Date().toLocaleString('en-US', jakartaOptions).replace(',', '');
-
+  const xAccessTime = new Date().toString();
   const userAgent = navigator.userAgent;
   const webGLParams = getWebGLParams();
   const utmParams = getUTMParams();
-  console.log('date:',new Date());
-  console.log('access_time', xAccessTime);
-  console.log("Local Time:", new Date().toString()); // Local timezone representation
-console.log("UTC Time:", new Date().toISOString()); // UTC representation
   
   return {
     host: host,
-    domain: domain,
     full_url: fullURL,
     access_time: xAccessTime,
     user_agent: userAgent,
@@ -138,7 +119,6 @@ async function postData(url, data) {
       headers: {
         'Content-Type': 'application/json',
         'X-Client-Host': data.host,
-        'X-Client-Domain': data.domain,
         'X-Access-Time': data.access_time,
         'User-Agent': data.user_agent,
         'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
