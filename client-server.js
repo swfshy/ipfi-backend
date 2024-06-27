@@ -130,7 +130,7 @@ async function postData(url, data) {
         'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
         'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth
       },
-      // body: JSON.stringify(data)
+      body: JSON.stringify(data)
     });
 
     // Log the response to debug
