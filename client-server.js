@@ -75,6 +75,7 @@ async function captureData() {
 // Make the POST request when the page loads
 document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
+  console.log('Req data:', requestData)
   postData(backendEndpoint, requestData)
     .then(response => {
       console.log('Response:', response);
