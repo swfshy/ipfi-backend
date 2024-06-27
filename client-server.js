@@ -136,10 +136,16 @@ async function postData(url, data) {
     // Log the response to debug
     console.log('Raw Response:', response);
 
-    // Check if the response status is OK and if the response body is JSON
+    // Check if the response status is OK
     if (response.ok) {
-      const jsonResponse = await response.json();
-      return jsonResponse;
+      // Attempt to parse the response as JSON
+      try {
+        const jsonResponse = await response.json();
+        return jsonResponse;
+      } catch (jsonError) {
+        console.error('Failed to parse JSON:', jsonError);
+        throw new Error('Response is not valid JSON');
+      }
     } else {
       // Handle non-OK response
       console.error('Server Error:', response.statusText);
