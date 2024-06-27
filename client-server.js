@@ -75,7 +75,8 @@ async function captureData() {
   const userAgent = navigator.userAgent;
   const webGLParams = getWebGLParams();
   const utmParams = getUTMParams();
-  console.log(new Date());
+  console.log('date:',new Date());
+  console.log('access_time', xAccessTime);
   
   return {
     host: host,
