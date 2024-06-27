@@ -77,6 +77,8 @@ async function captureData() {
   const utmParams = getUTMParams();
   console.log('date:',new Date());
   console.log('access_time', xAccessTime);
+  console.log("Local Time:", new Date().toString()); // Local timezone representation
+console.log("UTC Time:", new Date().toISOString()); // UTC representation
   
   return {
     host: host,
