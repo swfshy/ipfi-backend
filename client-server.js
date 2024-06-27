@@ -102,29 +102,30 @@ async function runDataCapture() {
       });
 }
 
-// Check if cookie consent is true and run the script
-const checkCookieConsentAndRun = () => {
-  const cookieAccepted = localStorage.getItem(consentVarName);
-  if (cookieAccepted) {
-      console.log('Kue === Acc');
-      runDataCapture();
-  } else {
-      console.log('Kue === Dec');
-  }
-};
+function checkCookieConsentAndObserve(consentVarName) {
+  const checkCookieConsentAndRun = () => {
+    const cookieAccepted = localStorage.getItem(consentVarName);
+    if (cookieAccepted) {
+        console.log('Kue === Acc');
+        runDataCapture();
+    } else {
+        console.log('Kue === Dec');
+    }
+  };
 
-// Initial check on page load
-checkCookieConsentAndRun();
+  // Initial check on page load
+  checkCookieConsentAndRun();
 
-// Observe changes to the cookieConsent item in localStorage within the same document
-const originalSetItem = localStorage.setItem;
-localStorage.setItem = function(key, value) {
+  // Observe changes to the cookieConsent item in localStorage within the same document
+  const originalSetItem = localStorage.setItem;
+  localStorage.setItem = function(key, value) {
     originalSetItem.apply(this, arguments);
     if (key === consentVarName) {
-        console.log('cookieConsent changed within the same document, checking condition');
-        checkCookieConsentAndRun();
+      console.log('cookieConsent changed within the same document, checking condition');
+      checkCookieConsentAndRun();
     }
-};
+  };
+}
 
 // Function to make a POST request
 async function postData(url, data) {
