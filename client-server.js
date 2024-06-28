@@ -93,36 +93,9 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
         console.log('Saved UUID:', userUUIDvalue);
 
         const uuidData = { user_uuid: userUUIDvalue };
-        
-        const postUUIDData = async (retryCount = 3) => {
-          try {
-            const response = await fetch(appendEndpoint, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(uuidData)
-            });
 
-            if (!response.ok) {
-              const errorText = await response.text();
-              throw new Error(`Network response was not ok: ${response.statusText}. Error details: ${errorText}`);
-            }
+        appendData(appendEndpoint, uuidData)
 
-            console.log('Saved UUID data posted successfully');
-          } catch (error) {
-            console.error('Error posting saved UUID data:', error);
-
-            if (retryCount > 0) {
-              console.log(`Retrying... (${3 - retryCount + 1})`);
-              await postUUIDData(retryCount - 1);
-            } else {
-              console.error('Failed to post saved UUID data after multiple attempts');
-            }
-          }
-        };
-
-        await postUUIDData();
       } else {
         console.log('Saved UUID not found');
       }
@@ -144,6 +117,39 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
     }
   };
 }
+
+// Function to make a POST append request
+async function appendData(url, data) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'user_uuid': data.user_uuid
+      },
+      body: JSON.stringify(data)
+    });
+
+    // Check if the response status is OK
+    if (response.ok) {
+      // Attempt to parse the response as JSON
+      try {
+        const jsonResponse = await response.json();
+        return jsonResponse;
+      } catch (jsonError) {
+        console.error('Failed to parse JSON:', jsonError);
+        throw new Error('Response is not valid JSON');
+      }
+    } else {
+      // Handle non-OK response
+      console.error('Server Error:', response.statusText);
+      throw new Error('Server responded with an error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 
 // Function to make a POST request
 async function postData(url, data) {
