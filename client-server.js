@@ -101,7 +101,7 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
   const checkCookieConsentAndRun = async () => {
     // Wait for documentId to be set
     await documentIdPromise;
-    
+
     const cookieAccepted = localStorage.getItem(consentVarName);
     console.log('cookieAccepted:', cookieAccepted);
     if (cookieAccepted) {
@@ -113,6 +113,21 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
 
         const uuidData = { documentId: documentId, user_uuid: userUUIDvalue };
         console.log('uuidData:', uuidData);
+
+        fetch(appendEndpoint, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(uuidData)
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log('Response from server:', data);
+          // Handle response as needed
+          })
+      .catch(error => console.error('Error:', error));
+
       } else {
         console.log('Saved UUID not found');
       }
