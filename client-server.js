@@ -3,7 +3,12 @@ console.log('Testing for console log');
 // Update the URL accordingly
 const backendEndpoint = 'https://d1e8-114-10-119-153.ngrok-free.app/conversions';
 const appendEndpoint = 'https://d1e8-114-10-119-153.ngrok-free.app/append-conversions';
+
 let documentId;
+let documentIdPromiseResolve;
+const documentIdPromise = new Promise(resolve => {
+  documentIdPromiseResolve = resolve;
+});
 
 // Function to get WebGL parameters
 function getWebGLParams() {
@@ -86,20 +91,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   setDocumentId(documentId);
 });
 
-function setDocumentId(id){
+function setDocumentId(id) {
   documentId = id;
-  console.log('doc in setfunction:',documentId);
+  console.log('doc in setfunction:', documentId);
+  documentIdPromiseResolve(); // Resolve the promise when documentId is set
 }
 
 async function checkCookieConsentAndObserve(consentVarName, userUUID) {
-  // Function to wait until documentId is defined
-  const waitForDocumentId = async () => {
-    while (!documentId) {
-      await new Promise(resolve => setTimeout(resolve, 50)); // Check every 100ms
-    }
-  };
-
-  await waitForDocumentId();
+  // Wait for documentId to be set
+  await documentIdPromise;
 
   const checkCookieConsentAndRun = async () => {
     const cookieAccepted = localStorage.getItem(consentVarName);
@@ -110,9 +110,9 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
         console.log('Saved UUID:', userUUIDvalue);
 
         const uuidData = { documentId: documentId, user_uuid: userUUIDvalue };
-        console.log('uuidData:',uuidData);
-        
-        const postUUIDData = async (retryCount = 3) => {
+        console.log('uuidData:', uuidData);
+
+        const postUUIDData = async () => {
           try {
             const response = await fetch(appendEndpoint, {
               method: 'POST',
@@ -130,13 +130,6 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
             console.log('Saved UUID data posted successfully');
           } catch (error) {
             console.error('Error posting saved UUID data:', error);
-
-            if (retryCount > 0) {
-              console.log(`Retrying... (${3 - retryCount + 1})`);
-              await postUUIDData(retryCount - 1);
-            } else {
-              console.error('Failed to post saved UUID data after multiple attempts');
-            }
           }
         };
 
