@@ -111,29 +111,6 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
 
         const uuidData = { documentId: documentId, user_uuid: userUUIDvalue };
         console.log('uuidData:', uuidData);
-
-        const postUUIDData = async () => {
-          try {
-            const response = await fetch(appendEndpoint, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(uuidData)
-            });
-
-            if (!response.ok) {
-              const errorText = await response.text();
-              throw new Error(`Network response was not ok: ${response.statusText}. Error details: ${errorText}`);
-            }
-
-            console.log('Saved UUID data posted successfully');
-          } catch (error) {
-            console.error('Error posting saved UUID data:', error);
-          }
-        };
-
-        await postUUIDData();
       } else {
         console.log('Saved UUID not found');
       }
