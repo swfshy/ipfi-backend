@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setDocumentId(documentId);
 });
 
-async function setDocumentId(id){
+function setDocumentId(id){
   documentId = id;
   console.log('doc in setfunction:',documentId);
 }
