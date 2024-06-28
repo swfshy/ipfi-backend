@@ -2,7 +2,7 @@ console.log('Testing for console log');
 
 // Update the URL accordingly
 const backendEndpoint = 'https://9f6f-114-4-100-19.ngrok-free.app/conversions';
-const appendEndpoint = 'https://9f6f-114-4-100-19.ngrok-free.app/append_conversions';
+const appendEndpoint = 'https://9f6f-114-4-100-19.ngrok-free.app/append-conversions';
 
 // Function to get WebGL parameters
 function getWebGLParams() {
