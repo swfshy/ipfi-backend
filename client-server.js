@@ -1,7 +1,10 @@
+const { default: fetch } = require("node-fetch");
+
 console.log('Testing for console log');
 
 // Update the URL accordingly
-const backendEndpoint = 'https://5875-114-10-69-50.ngrok-free.app/conversions';
+const backendEndpoint = 'https://9f6f-114-4-100-19.ngrok-free.app/conversions';
+const appendEndpoint = 'https://9f6f-114-4-100-19.ngrok-free.app/append-conversions';
 
 // Function to get WebGL parameters
 function getWebGLParams() {
@@ -82,15 +85,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-function checkCookieConsentAndObserve(consentVarName, userUUID) {
-  const checkCookieConsentAndRun = () => {
+async function checkCookieConsentAndObserve(consentVarName, userUUID) {
+  const checkCookieConsentAndRun = async () => {
     const cookieAccepted = localStorage.getItem(consentVarName);
     if (cookieAccepted) {
       console.log('Kue === Acc');
       const userUUIDvalue = localStorage.getItem(userUUID);
       if (userUUIDvalue) {
         console.log('Saved UUID:', userUUIDvalue);
+
         // Call a function or perform an action with the saveduuid value here
+        const uuidData = {
+          user_uuid: userUUIDvalue
+        };
+        
+        //Post the saved UUID data
+        try {
+          const response = await fetch(appendEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(uuidData)
+          });
+
+          if(!response.ok){
+            throw new Error('Network response was not ok');
+          }
+        } catch (error) {
+          console.error('Error posting saved UUID data:', error);
+        }
       } else {
         console.log('Saved UUID not found');
       }
