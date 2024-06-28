@@ -98,10 +98,10 @@ function setDocumentId(id) {
 }
 
 async function checkCookieConsentAndObserve(consentVarName, userUUID) {
-  // Wait for documentId to be set
-  await documentIdPromise;
-
   const checkCookieConsentAndRun = async () => {
+    // Wait for documentId to be set
+    await documentIdPromise;
+    
     const cookieAccepted = localStorage.getItem(consentVarName);
     console.log('cookieAccepted:', cookieAccepted);
     if (cookieAccepted) {
