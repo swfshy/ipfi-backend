@@ -92,27 +92,37 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
       if (userUUIDvalue) {
         console.log('Saved UUID:', userUUIDvalue);
 
-        // Call a function or perform an action with the saveduuid value here
-        const uuidData = {
-          user_uuid: userUUIDvalue
-        };
+        const uuidData = { user_uuid: userUUIDvalue };
         
-        //Post the saved UUID data
-        try {
-          const response = await fetch(appendEndpoint, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(uuidData)
-          });
+        const postUUIDData = async (retryCount = 3) => {
+          try {
+            const response = await fetch(appendEndpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(uuidData)
+            });
 
-          if(!response.ok){
-            throw new Error('Network response was not ok');
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Network response was not ok: ${response.statusText}. Error details: ${errorText}`);
+            }
+
+            console.log('Saved UUID data posted successfully');
+          } catch (error) {
+            console.error('Error posting saved UUID data:', error);
+
+            if (retryCount > 0) {
+              console.log(`Retrying... (${3 - retryCount + 1})`);
+              await postUUIDData(retryCount - 1);
+            } else {
+              console.error('Failed to post saved UUID data after multiple attempts');
+            }
           }
-        } catch (error) {
-          console.error('Error posting saved UUID data:', error);
-        }
+        };
+
+        await postUUIDData();
       } else {
         console.log('Saved UUID not found');
       }
