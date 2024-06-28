@@ -103,9 +103,11 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
 
   const checkCookieConsentAndRun = async () => {
     const cookieAccepted = localStorage.getItem(consentVarName);
+    console.log('cookieAccepted:', cookieAccepted);
     if (cookieAccepted) {
       console.log('Kue === Acc');
       const userUUIDvalue = localStorage.getItem(userUUID);
+      console.log('userUUIDvalue:', userUUIDvalue);
       if (userUUIDvalue) {
         console.log('Saved UUID:', userUUIDvalue);
 
@@ -120,7 +122,7 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
   };
 
   // Initial check on page load
-  checkCookieConsentAndRun();
+  await checkCookieConsentAndRun();
 
   // Observe changes to the consentVarName item in localStorage within the same document
   const originalSetItem = localStorage.setItem;
