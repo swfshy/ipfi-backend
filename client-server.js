@@ -1,5 +1,3 @@
-const { default: fetch } = require("node-fetch");
-
 console.log('Testing for console log');
 
 // Update the URL accordingly
