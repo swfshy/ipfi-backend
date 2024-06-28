@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function setDocumentId(id){
   documentId = id;
+  console.log('doc in setfunction:',documentId);
 }
 
 async function checkCookieConsentAndObserve(consentVarName, userUUID) {
