@@ -3,6 +3,7 @@ console.log('Testing for console log');
 // Update the URL accordingly
 const backendEndpoint = 'https://d1e8-114-10-119-153.ngrok-free.app/conversions';
 const appendEndpoint = 'https://d1e8-114-10-119-153.ngrok-free.app/append-conversions';
+let documentId;
 
 // Function to get WebGL parameters
 function getWebGLParams() {
@@ -77,11 +78,17 @@ async function captureData() {
 document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
   console.log('Req data:', requestData)
-  postData(backendEndpoint, requestData)
-    .then(response => {
-      console.log('Response:', response);
-    });
+  const initialResponse = await postData(backendEndpoint, requestData);
+  console.log('Initial Response:', initialResponse);
+  // Extract documentId from initialResponse
+  const documentId = initialResponse.documentId;
+  console.log('doc:', documentId);
+  setDocumentId(documentId);
 });
+
+async function setDocumentId(id){
+  documentId = id;
+}
 
 async function checkCookieConsentAndObserve(consentVarName, userUUID) {
   const checkCookieConsentAndRun = async () => {
@@ -92,10 +99,38 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
       if (userUUIDvalue) {
         console.log('Saved UUID:', userUUIDvalue);
 
-        const uuidData = { user_uuid: userUUIDvalue };
+        const uuidData = { documentId: documentId, user_uuid: userUUIDvalue };
+        console.log('uuidData:',uuidData);
+        
+        const postUUIDData = async (retryCount = 3) => {
+          try {
+            const response = await fetch(appendEndpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(uuidData)
+            });
 
-        appendData(appendEndpoint, uuidData)
+            if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Network response was not ok: ${response.statusText}. Error details: ${errorText}`);
+            }
 
+            console.log('Saved UUID data posted successfully');
+          } catch (error) {
+            console.error('Error posting saved UUID data:', error);
+
+            if (retryCount > 0) {
+              console.log(`Retrying... (${3 - retryCount + 1})`);
+              await postUUIDData(retryCount - 1);
+            } else {
+              console.error('Failed to post saved UUID data after multiple attempts');
+            }
+          }
+        };
+
+        await postUUIDData();
       } else {
         console.log('Saved UUID not found');
       }
@@ -117,39 +152,6 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
     }
   };
 }
-
-// Function to make a POST append request
-async function appendData(url, data) {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'user_uuid': data.user_uuid
-      },
-      body: JSON.stringify(data)
-    });
-
-    // Check if the response status is OK
-    if (response.ok) {
-      // Attempt to parse the response as JSON
-      try {
-        const jsonResponse = await response.json();
-        return jsonResponse;
-      } catch (jsonError) {
-        console.error('Failed to parse JSON:', jsonError);
-        throw new Error('Response is not valid JSON');
-      }
-    } else {
-      // Handle non-OK response
-      console.error('Server Error:', response.statusText);
-      throw new Error('Server responded with an error');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
 
 // Function to make a POST request
 async function postData(url, data) {
