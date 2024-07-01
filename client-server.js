@@ -1,8 +1,8 @@
 console.log('Testing for console log');
 
 // Update the URL accordingly
-const backendEndpoint = 'https://d1e8-114-10-119-153.ngrok-free.app/conversions';
-const appendEndpoint = 'https://d1e8-114-10-119-153.ngrok-free.app/append-conversions';
+const backendEndpoint = 'https://d22b-120-188-36-115.ngrok-free.app/conversions';
+const appendEndpoint = 'https://d22b-120-188-36-115.ngrok-free.app/append-conversions';
 
 let documentId;
 let documentIdPromiseResolve;
