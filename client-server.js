@@ -113,7 +113,7 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
       // Set third-party cookie if consent is accepted
       (function() {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://your-third-party-server.com/set-cookie', true);
+        xhr.open('GET', cookieEndpoint, true);
         xhr.withCredentials = true; // Important to include cookies in cross-origin requests
         xhr.send();
       })();
