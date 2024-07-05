@@ -3,6 +3,7 @@ console.log('Testing for console log');
 // Update the URL accordingly
 const backendEndpoint = 'https://9848-114-4-213-165.ngrok-free.app/conversions';
 const appendEndpoint = 'https://9848-114-4-213-165.ngrok-free.app/append-conversions';
+const cookieEndpoint = 'https://9848-114-4-213-165.ngrok-free.app/set-cookie';
 
 let documentId;
 let documentIdPromiseResolve;
@@ -108,6 +109,15 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
       console.log('Kue === Acc');
       const userUUIDvalue = localStorage.getItem(userUUID);
       console.log('userUUIDvalue:', userUUIDvalue);
+
+      // Set third-party cookie if consent is accepted
+      (function() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://your-third-party-server.com/set-cookie', true);
+        xhr.withCredentials = true; // Important to include cookies in cross-origin requests
+        xhr.send();
+      })();
+
       if (userUUIDvalue) {
         console.log('Saved UUID:', userUUIDvalue);
 
