@@ -1,9 +1,9 @@
 console.log('Testing for console log');
 
 // Update the URL accordingly
-const backendEndpoint = 'https://9848-114-4-213-165.ngrok-free.app/conversions';
-const appendEndpoint = 'https://9848-114-4-213-165.ngrok-free.app/append-conversions';
-const cookieEndpoint = 'https://9848-114-4-213-165.ngrok-free.app/set-cookie';
+const backendEndpoint = 'https://b3b4-114-10-114-72.ngrok-free.app/conversions';
+const appendEndpoint = 'https://b3b4-114-10-114-72.ngrok-free.app/append-conversions';
+const cookieEndpoint = 'https://b3b4-114-10-114-72.ngrok-free.app/set-cookie';
 
 let documentId;
 let documentIdPromiseResolve;
