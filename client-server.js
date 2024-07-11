@@ -127,6 +127,12 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
         const uuidData = { documentId: documentId, user_uuid: userUUIDvalue };
         console.log('uuidData:', uuidData);
 
+        if (webGLParams && webGLParams.screenResolution) {
+          console.log('Screen Resolution:', clientInfo.screenResolution);
+        } else {
+          console.error('clientInfo or screenResolution is undefined');
+        }
+
         fetch(appendEndpoint, {
           method: 'POST',
           headers: {
