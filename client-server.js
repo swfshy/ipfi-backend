@@ -131,14 +131,14 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',      
-              'X-WebGL-Renderer': webGLParams.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
-              'X-WebGL-Vendor': webGLParams.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
-              'X-Screen-Width': webGLParams.webGLParams.screenResolution.width,
-              'X-Screen-Height': webGLParams.webGLParams.screenResolution.height,
-              'X-Avail-Screen-Width': webGLParams.webGLParams.screenResolution.availWidth,
-              'X-Avail-Screen-Height': webGLParams.webGLParams.screenResolution.availHeight,
-              'X-Color-Depth': webGLParams.webGLParams.screenResolution.colorDepth,
-              'X-Pixel-Depth': webGLParams.webGLParams.screenResolution.pixelDepth
+              'X-WebGL-Renderer': webGLParams ? (webGLParams.unmaskedRenderer || webGLParams.renderer) : '',
+              'X-WebGL-Vendor': webGLParams ? (webGLParams.unmaskedVendor || webGLParams.vendor) : '',
+              'X-Screen-Width': webGLParams.screenResolution.width,
+              'X-Screen-Height': webGLParams.screenResolution.height,
+              'X-Avail-Screen-Width': webGLParams.screenResolution.availWidth,
+              'X-Avail-Screen-Height': webGLParams.screenResolution.availHeight,
+              'X-Color-Depth': webGLParams.screenResolution.colorDepth,
+              'X-Pixel-Depth': webGLParams.screenResolution.pixelDepth
           },
           body: JSON.stringify(uuidData)
         })
