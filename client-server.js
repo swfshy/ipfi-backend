@@ -67,7 +67,6 @@ async function captureData() {
   const fullURL = window.location.href;
   const xAccessTime = new Date().toString();
   const userAgent = navigator.userAgent;
-  const webGLParams = getWebGLParams();
   const utmParams = getUTMParams();
   
   return {
@@ -75,7 +74,6 @@ async function captureData() {
     full_url: fullURL,
     access_time: xAccessTime,
     user_agent: userAgent,
-    webGLParams: webGLParams,
     utmParams: utmParams
   };
 }
@@ -107,7 +105,12 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
     console.log('cookieAccepted:', cookieAccepted);
     if (cookieAccepted) {
       console.log('Kue === Acc');
+
       const userUUIDvalue = localStorage.getItem(userUUID);
+      const webGLParams = getWebGLParams();
+
+      console.log(webGLParams);
+
       console.log('userUUIDvalue:', userUUIDvalue);
 
       // Set third-party cookie if consent is accepted
@@ -127,7 +130,15 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
         fetch(appendEndpoint, {
           method: 'POST',
           headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',      
+              'X-WebGL-Renderer': webGLParams.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
+              'X-WebGL-Vendor': webGLParams.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
+              'X-Screen-Width': webGLParams.webGLParams.screenResolution.width,
+              'X-Screen-Height': webGLParams.webGLParams.screenResolution.height,
+              'X-Avail-Screen-Width': webGLParams.webGLParams.screenResolution.availWidth,
+              'X-Avail-Screen-Height': webGLParams.webGLParams.screenResolution.availHeight,
+              'X-Color-Depth': webGLParams.webGLParams.screenResolution.colorDepth,
+              'X-Pixel-Depth': webGLParams.webGLParams.screenResolution.pixelDepth
           },
           body: JSON.stringify(uuidData)
         })
@@ -169,15 +180,7 @@ async function postData(url, data) {
         'Content-Type': 'application/json',
         'X-Client-Host': data.host,
         'X-Access-Time': data.access_time,
-        'User-Agent': data.user_agent,
-        'X-WebGL-Renderer': data.webGLParams ? (data.webGLParams.unmaskedRenderer || data.webGLParams.renderer) : '',
-        'X-WebGL-Vendor': data.webGLParams ? (data.webGLParams.unmaskedVendor || data.webGLParams.vendor) : '',
-        'X-Screen-Width': data.webGLParams.screenResolution.width,
-        'X-Screen-Height': data.webGLParams.screenResolution.height,
-        'X-Avail-Screen-Width': data.webGLParams.screenResolution.availWidth,
-        'X-Avail-Screen-Height': data.webGLParams.screenResolution.availHeight,
-        'X-Color-Depth': data.webGLParams.screenResolution.colorDepth,
-        'X-Pixel-Depth': data.webGLParams.screenResolution.pixelDepth
+        'User-Agent': data.user_agent
       },
       body: JSON.stringify(data)
     });
