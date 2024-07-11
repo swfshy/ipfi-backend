@@ -128,7 +128,7 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
         console.log('uuidData:', uuidData);
 
         if (webGLParams && webGLParams.screenResolution) {
-          console.log('Screen Resolution:', clientInfo.screenResolution);
+          console.log('Screen Resolution:', webGLParams.screenResolution);
         } else {
           console.error('clientInfo or screenResolution is undefined');
         }
