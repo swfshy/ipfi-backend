@@ -190,6 +190,7 @@ async function postData(url, data) {
       },
       body: JSON.stringify(data)
     });
+    console.log(body)
 
     // Log the response to debug
     console.log('Raw Response:', response);
