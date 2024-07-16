@@ -1,9 +1,9 @@
 console.log('Testing for console log');
 
-// Update the URL accordingly
-const backendEndpoint = 'https://343e-120-188-33-255.ngrok-free.app/conversions';
-const appendEndpoint = 'https://343e-120-188-33-255.ngrok-free.app/append-conversions';
-const cookieEndpoint = 'https://343e-120-188-33-255.ngrok-free.app/set-cookie';
+// Endpoint URL
+const backendEndpoint = 'https://493f-114-10-67-211.ngrok-free.app/conversions';
+const appendEndpoint = 'https://493f-114-10-67-211.ngrok-free.app/append-conversions';
+const cookieEndpoint = 'https://493f-114-10-67-211.ngrok-free.app/set-cookie';
 
 let documentId;
 let documentIdPromiseResolve;
@@ -186,11 +186,12 @@ async function postData(url, data) {
         'Content-Type': 'application/json',
         'X-Client-Host': data.host,
         'X-Access-Time': data.access_time,
-        'User-Agent': data.user_agent
+        'User-Agent': data.user_agent,
+        'X-FULL-URI': data.fullURL,
+        'UTM-Params': data.utmParams
       },
       body: JSON.stringify(data)
     });
-    console.log(response.body);
 
     // Log the response to debug
     console.log('Raw Response:', response);
