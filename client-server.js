@@ -194,7 +194,7 @@ async function postData(url, data) {
     });
 
     // Log the response to debug
-    console.log('Raw Response:', response);
+    console.log('Raw Response:', data);
 
     // Check if the response status is OK
     if (response.ok) {
