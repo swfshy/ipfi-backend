@@ -1,10 +1,11 @@
 console.log('Testing for console log');
 
 // Endpoint URL
-const backendEndpoint = 'https://493f-114-10-67-211.ngrok-free.app/conversions';
-const appendEndpoint = 'https://493f-114-10-67-211.ngrok-free.app/append-conversions';
-const cookieEndpoint = 'https://493f-114-10-67-211.ngrok-free.app/set-cookie';
+const backendEndpoint = 'https://6f9f-120-188-6-157.ngrok-free.app/conversions';
+const appendEndpoint = 'https://6f9f-120-188-6-157.ngrok-free.app/append-conversions';
+const cookieEndpoint = 'https://6f9f-120-188-6-157.ngrok-free.app/set-cookie';
 
+// DocumentId resolve (MongoDB)
 let documentId;
 let documentIdPromiseResolve;
 const documentIdPromise = new Promise(resolve => {
@@ -61,7 +62,7 @@ function getUTMParams() {
   return utmParams;
 }
 
-// Capture the necessary data
+// Function to get default header from browser
 async function captureData() {
   const host = window.location.host;
   const fullURL = window.location.href;
@@ -82,25 +83,31 @@ async function captureData() {
 document.addEventListener('DOMContentLoaded', async () => {
   const requestData = await captureData();
   console.log('Req data:', requestData)
+
   const initialResponse = await postData(backendEndpoint, requestData);
   console.log('Initial Response:', initialResponse);
+
   // Extract documentId from initialResponse
   const documentId = initialResponse.documentId;
   console.log('doc:', documentId);
   setDocumentId(documentId);
 });
 
+
+// Set document id
 function setDocumentId(id) {
   documentId = id;
   console.log('doc in setfunction:', documentId);
   documentIdPromiseResolve(); // Resolve the promise when documentId is set
 }
 
+// function to check cookie consent variable and get cookie var
 async function checkCookieConsentAndObserve(consentVarName, userUUID) {
   const checkCookieConsentAndRun = async () => {
     // Wait for documentId to be set
     await documentIdPromise;
 
+    //check if consent is accepted
     const cookieAccepted = localStorage.getItem(consentVarName);
     console.log('cookieAccepted:', cookieAccepted);
     if (cookieAccepted) {
@@ -133,6 +140,7 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
           console.error('clientInfo or screenResolution is undefined');
         }
 
+        // fetch additional data to append endpoint
         fetch(appendEndpoint, {
           method: 'POST',
           headers: {
@@ -177,7 +185,7 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
   };
 }
 
-// Function to make a POST request
+// Function to make a POST request (default header)
 async function postData(url, data) {
   try {
     const response = await fetch(url, {
