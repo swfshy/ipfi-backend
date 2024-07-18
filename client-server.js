@@ -3,13 +3,13 @@ console.log('Testing for console log');
 // Endpoint URL
 const backendEndpoint = 'https://6f9f-120-188-6-157.ngrok-free.app/conversions';
 const appendEndpoint = 'https://6f9f-120-188-6-157.ngrok-free.app/append-conversions';
-const cookieEndpoint = 'https://6f9f-120-188-6-157.ngrok-free.app/set-cookie';
+const cookieEndpoint = 'https://6f9f-120-188-6-157.ngrok-free.app/cookie';
 
 // DocumentId resolve (MongoDB)
+// Akan diubah disesuaikan dengan database nantinya
 let documentId;
-let documentIdPromiseResolve;
 const documentIdPromise = new Promise(resolve => {
-  documentIdPromiseResolve = resolve;
+  documentIdPromise.resolve = resolve;
 });
 
 // Function to get WebGL parameters
@@ -62,115 +62,176 @@ function getUTMParams() {
   return utmParams;
 }
 
-// Function to get default header from browser
-async function captureData() {
-  const host = window.location.host;
-  const fullURL = window.location.href;
-  const xAccessTime = new Date().toString();
-  const userAgent = navigator.userAgent;
-  const utmParams = getUTMParams();
+const HttpConnector = {
+  // Function to get default header from browser
+  async getDefaultHeader() {
+    try {
+      const host = window.location.host;
+      const fullURL = window.location.href;
+      const xAccessTime = new Date().toString();
+      const userAgent = navigator.userAgent;
+      const utmParams = getUTMParams();
   
-  return {
-    host: host,
-    full_url: fullURL,
-    access_time: xAccessTime,
-    user_agent: userAgent,
-    utmParams: utmParams
-  };
+      // tambahkan promise resolve jika ingin benar benar di await
+      return {
+        host: host,
+        full_url: fullURL,
+        access_time: xAccessTime,
+        user_agent: userAgent,
+        utmParams: utmParams
+      };
+    } catch (error) {
+      console.error('Error in getDefaultHeader:', error);
+    }
+  },
+
+  async postDefaultHeader(url, data) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      // Log the response to debug
+      console.log('Raw response postDefaultHeader:', response);
+      console.log('Data yg dikirim:', data);
+  
+      // Check if the response status is OK
+      if (response.ok) {
+        // Attempt to parse the response as JSON
+        try {
+          return await response.json();
+        } catch (jsonError) {
+          console.error('Failed to parse JSON:', jsonError);
+          throw new Error('Response is not valid JSON');
+        }
+      } else {
+        // Handle non-OK response
+        console.error('Server Error:', response.statusText);
+        throw new Error('Server responded with an error');
+      }
+    } catch (error) {
+      console.error('Error postDefaultHeader:', error);
+    }
+  },
+
+  async postAdditionalData(url, data){
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      })
+    } catch (error) {
+      console.error('Error in postAdditionalData:', error);
+      throw error;
+    }
+  },
+
+  async get3rdCookies(url){
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        credentials: 'include'
+      })
+    } catch (error) {
+      console.error('Error in get3rdCookies:', error);
+      throw error;
+    }
+  }
+
+};
+
+const processDefaultHeader = async () => {
+  // get default header
+  const defaultHeaderData = HttpConnector.getDefaultHeader();
+  console.log('Request data:', defaultHeaderData)
+
+  // post default header to database
+  const postDefaultHeaderResponse = await HttpConnector.postDefaultHeader(backendEndpoint, defaultHeaderData);
+ 
+  documentId = postDefaultHeaderResponse.documentId;;
+  console.log('DocumentID after postDefaultHeader:', documentId);
+  documentIdPromise.resolve(); // Resolve the promise when documentId is set
 }
 
 // Make the POST request when the page loads
-document.addEventListener('DOMContentLoaded', async () => {
-  const requestData = await captureData();
-  console.log('Req data:', requestData)
-
-  const initialResponse = await postData(backendEndpoint, requestData);
-  console.log('Initial Response:', initialResponse);
-
-  // Extract documentId from initialResponse
-  const documentId = initialResponse.documentId;
-  console.log('doc:', documentId);
-  setDocumentId(documentId);
+document.addEventListener('DOMContentLoaded', () => {
+  processDefaultHeader();
 });
 
+const checkCookieConsentAndRun = async () => {
+  // Wait for documentId to be set
+  await documentIdPromise;
 
-// Set document id
-function setDocumentId(id) {
-  documentId = id;
-  console.log('doc in setfunction:', documentId);
-  documentIdPromiseResolve(); // Resolve the promise when documentId is set
-}
+  //check if consent is accepted
+  const cookieAccepted = localStorage.getItem(consentVarName);
+  console.log('cookieAccepted:', cookieAccepted);
+  if (cookieAccepted) {
+    console.log('Kue === Acc');
+
+    const firstPartyCookies = localStorage.getItem(userUUID);
+    const webGLParams = getWebGLParams();
+
+    console.log('1st Party Cookies:', firstPartyCookies);
+
+    // Set third-party cookie if consent is accepted
+    // bisa dikelompokan untuk kategori http connector
+    HttpConnector.get3rdCookies(cookieEndpoint);
+
+    if (firstPartyCookies) {
+      const additionalData = { 
+        documentId: documentId, 
+        firstPartyCookies: firstPartyCookies,
+        webgl_renderer: webGLParams ? (webGLParams.unmaskedRenderer || webGLParams.renderer) : '',
+        webgl_vendor: webGLParams ? (webGLParams.unmaskedVendor || webGLParams.vendor) : '',
+        screen_width: webGLParams.screenResolution.width,
+        screen_height: webGLParams.screenResolution.height,
+        avail_width: webGLParams.screenResolution.availWidth,
+        avail_height: webGLParams.screenResolution.availHeight,
+        color_depth: webGLParams.screenResolution.colorDepth,
+        pixel_depth: webGLParams.screenResolution.pixelDepth
+      };
+      console.log('additionalData:', additionalData);
+
+      // fetch additional data to append endpoint
+      fetch(appendEndpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',      
+            'X-WebGL-Renderer': (webGLParams?.unmaskedRenderer || webGLParams?.renderer || ''),
+            'X-WebGL-Vendor': webGLParams ? (webGLParams.unmaskedVendor || webGLParams.vendor) : '',
+            'X-Screen-Width': webGLParams.screenResolution.width,
+            'X-Screen-Height': webGLParams.screenResolution.height,
+            'X-Avail-Screen-Width': webGLParams.screenResolution.availWidth,
+            'X-Avail-Screen-Height': webGLParams.screenResolution.availHeight,
+            'X-Color-Depth': webGLParams.screenResolution.colorDepth,
+            'X-Pixel-Depth': webGLParams.screenResolution.pixelDepth
+        },
+        body: JSON.stringify(uuidData)
+      })
+      .then(response => response.text())
+      .then(data => {
+        console.log('Response from server:', data);
+        // Handle response as needed
+        })
+    .catch(error => console.error('Error:', error));
+
+    } else {
+      console.log('First Party Cookies not found');
+    }
+  } else {
+    console.log('Kue === Dec');
+  }
+};
 
 // function to check cookie consent variable and get cookie var
-async function checkCookieConsentAndObserve(consentVarName, userUUID) {
-  const checkCookieConsentAndRun = async () => {
-    // Wait for documentId to be set
-    await documentIdPromise;
-
-    //check if consent is accepted
-    const cookieAccepted = localStorage.getItem(consentVarName);
-    console.log('cookieAccepted:', cookieAccepted);
-    if (cookieAccepted) {
-      console.log('Kue === Acc');
-
-      const userUUIDvalue = localStorage.getItem(userUUID);
-      const webGLParams = getWebGLParams();
-
-      console.log(webGLParams);
-
-      console.log('userUUIDvalue:', userUUIDvalue);
-
-      // Set third-party cookie if consent is accepted
-      (function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', cookieEndpoint, true);
-        xhr.withCredentials = true; // Important to include cookies in cross-origin requests
-        xhr.send();
-      })();
-
-      if (userUUIDvalue) {
-        console.log('Saved UUID:', userUUIDvalue);
-
-        const uuidData = { documentId: documentId, user_uuid: userUUIDvalue };
-        console.log('uuidData:', uuidData);
-
-        if (webGLParams && webGLParams.screenResolution) {
-          console.log('Screen Resolution:', webGLParams.screenResolution);
-        } else {
-          console.error('clientInfo or screenResolution is undefined');
-        }
-
-        // fetch additional data to append endpoint
-        fetch(appendEndpoint, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',      
-              'X-WebGL-Renderer': webGLParams ? (webGLParams.unmaskedRenderer || webGLParams.renderer) : '',
-              'X-WebGL-Vendor': webGLParams ? (webGLParams.unmaskedVendor || webGLParams.vendor) : '',
-              'X-Screen-Width': webGLParams.screenResolution.width,
-              'X-Screen-Height': webGLParams.screenResolution.height,
-              'X-Avail-Screen-Width': webGLParams.screenResolution.availWidth,
-              'X-Avail-Screen-Height': webGLParams.screenResolution.availHeight,
-              'X-Color-Depth': webGLParams.screenResolution.colorDepth,
-              'X-Pixel-Depth': webGLParams.screenResolution.pixelDepth
-          },
-          body: JSON.stringify(uuidData)
-        })
-        .then(response => response.text())
-        .then(data => {
-          console.log('Response from server:', data);
-          // Handle response as needed
-          })
-      .catch(error => console.error('Error:', error));
-
-      } else {
-        console.log('Saved UUID not found');
-      }
-    } else {
-      console.log('Kue === Dec');
-    }
-  };
-
+async function checkCookieConsentAndObserve(consentVarName, firstPartyCookies) {
   // Initial check on page load
   await checkCookieConsentAndRun();
 
@@ -183,43 +244,4 @@ async function checkCookieConsentAndObserve(consentVarName, userUUID) {
       checkCookieConsentAndRun();
     }
   };
-}
-
-// Function to make a POST request (default header)
-async function postData(url, data) {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Client-Host': data.host,
-        'X-Access-Time': data.access_time,
-        'User-Agent': data.user_agent,
-        'X-FULL-URI': data.fullURL,
-        'UTM-Params': data.utmParams
-      },
-      body: JSON.stringify(data)
-    });
-
-    // Log the response to debug
-    console.log('Raw Response:', data);
-
-    // Check if the response status is OK
-    if (response.ok) {
-      // Attempt to parse the response as JSON
-      try {
-        const jsonResponse = await response.json();
-        return jsonResponse;
-      } catch (jsonError) {
-        console.error('Failed to parse JSON:', jsonError);
-        throw new Error('Response is not valid JSON');
-      }
-    } else {
-      // Handle non-OK response
-      console.error('Server Error:', response.statusText);
-      throw new Error('Server responded with an error');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
 }
