@@ -149,7 +149,7 @@ const HttpConnector = {
 
 const processDefaultHeader = async () => {
   // get default header
-  const defaultHeaderData = HttpConnector.getDefaultHeader();
+  const defaultHeaderData = await HttpConnector.getDefaultHeader();
   console.log('Request data:', defaultHeaderData)
 
   // post default header to database
