@@ -155,7 +155,7 @@ const processDefaultHeader = async () => {
   // post default header to database
   const postDefaultHeaderResponse = await HttpConnector.postDefaultHeader(backendEndpoint, defaultHeaderData);
  
-  documentId = postDefaultHeaderResponse.documentId;;
+  const documentId = postDefaultHeaderResponse.documentId;;
   console.log('DocumentID after postDefaultHeader:', documentId);
   documentIdPromiseResolve(); // Resolve the promise when documentId is set
 }
