@@ -170,9 +170,6 @@ const checkCookieConsentAndRun = async () => {
   // Wait for documentId to be set
   await documentIdPromise;
 
-  //check if consent is accepted
-  const cookieAccepted = localStorage.getItem(consentVarName);
-  console.log('cookieAccepted:', cookieAccepted);
   if (cookieAccepted) {
     console.log('Kue === Acc');
 
@@ -233,6 +230,10 @@ const checkCookieConsentAndRun = async () => {
 
 // function to check cookie consent variable and get cookie var
 async function checkCookieConsentAndObserve(consentVarName, firstPartyCookies) {
+  //check if consent is accepted
+  const cookieAccepted = localStorage.getItem(consentVarName);
+  console.log('cookieAccepted:', cookieAccepted);
+
   // Initial check on page load
   await checkCookieConsentAndRun();
 
