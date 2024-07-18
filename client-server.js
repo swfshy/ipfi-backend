@@ -8,10 +8,10 @@ const cookieEndpoint = 'https://936b-114-10-25-143.ngrok-free.app/cookie';
 // DocumentId resolve (MongoDB)
 // Akan diubah disesuaikan dengan database nantinya
 let documentId;
-const documentIdPromise = new Promise(resolve => {
-  documentIdPromise.resolve = resolve;
+let documentIdPromiseResolve;
+const documentIdPromise = new Promise((resolve) => {
+  documentIdPromiseResolve = resolve;
 });
-
 // Function to get WebGL parameters
 function getWebGLParams() {
   let canvas = document.createElement('canvas');
@@ -157,7 +157,7 @@ const processDefaultHeader = async () => {
  
   documentId = postDefaultHeaderResponse.documentId;;
   console.log('DocumentID after postDefaultHeader:', documentId);
-  documentIdPromise.resolve(); // Resolve the promise when documentId is set
+  documentIdPromiseResolve(); // Resolve the promise when documentId is set
 }
 
 // Make the POST request when the page loads
