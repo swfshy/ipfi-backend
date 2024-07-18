@@ -166,10 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
   processDefaultHeader();
 });
 
-const checkCookieConsentAndRun = async () => {
+const checkCookieConsentAndRun = async (cookieAccepted = '') => {
   // Wait for documentId to be set
   await documentIdPromise;
 
+  console.log(cookieAccepted)
   if (cookieAccepted) {
     console.log('Kue === Acc');
 
@@ -235,7 +236,7 @@ async function checkCookieConsentAndObserve(consentVarName, firstPartyCookies) {
   console.log('cookieAccepted:', cookieAccepted);
 
   // Initial check on page load
-  await checkCookieConsentAndRun();
+  await checkCookieConsentAndRun(cookieAccepted);
 
   // Observe changes to the consentVarName item in localStorage within the same document
   const originalSetItem = localStorage.setItem;
