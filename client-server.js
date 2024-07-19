@@ -134,7 +134,7 @@ const HttpConnector = {
       if (response.ok) {
         // Attempt to parse the response as JSON
         try {
-          return await response;
+          return await response.json();
         } catch (error) {
           console.error('Failed get response:', error);
         }
