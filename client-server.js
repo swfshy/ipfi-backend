@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   processDefaultHeader();
 });
 
-const checkCookieConsentAndRun = async (consentVarName, firstPartyCookies) => {
+const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
   // Wait for documentId to be set
   await documentIdPromise;
 
@@ -177,7 +177,7 @@ const checkCookieConsentAndRun = async (consentVarName, firstPartyCookies) => {
   if (cookieAccepted) {
     console.log('Kue === Acc');
 
-    const firstPartyCookies = localStorage.getItem(firstPartyCookies);
+    const firstPartyCookies = localStorage.getItem(cookieVarName);
     const webGLParams = getWebGLParams();
 
     console.log('1st Party Cookies:', firstPartyCookies);
@@ -233,9 +233,9 @@ const checkCookieConsentAndRun = async (consentVarName, firstPartyCookies) => {
 };
 
 // function to check cookie consent variable and get cookie var
-async function checkCookieConsentAndObserve(consentVarName, firstPartyCookies) {
+async function checkCookieConsentAndObserve(consentVarName, cookieVarName) {
   // Initial check on page load
-  await checkCookieConsentAndRun(consentVarName, firstPartyCookies);
+  await checkCookieConsentAndRun(consentVarName, cookieVarName);
 
   // Observe changes to the consentVarName item in localStorage within the same document
   const originalSetItem = localStorage.setItem;
@@ -243,7 +243,7 @@ async function checkCookieConsentAndObserve(consentVarName, firstPartyCookies) {
     originalSetItem.apply(this, arguments);
     if (key === consentVarName) {
       console.log('cookieConsent changed within the same document, checking condition');
-      checkCookieConsentAndRun(consentVarName, firstPartyCookies);
+      checkCookieConsentAndRun(consentVarName, cookieVarName);
     }
   };
 }
