@@ -203,7 +203,7 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
       console.log('additionalData:', additionalData);
 
       const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
-      console.log('postAdditionalDataResponse response:', postAdditionalDataResponse);
+      console.log('postAdditionalDataResponse response:', postAdditionalDataResponse.CookieIOH);
 
     } else {
       console.log('First Party Cookies not found');
