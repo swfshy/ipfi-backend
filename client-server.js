@@ -127,6 +127,7 @@ const HttpConnector = {
         },
         body: JSON.stringify(data)
       })
+      console.log('postAdditionalData response:', response);
     } catch (error) {
       console.error('Error in postAdditionalData:', error);
       throw error;
