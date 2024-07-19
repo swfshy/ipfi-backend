@@ -198,7 +198,7 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
     console.log('1st Party Cookies:', firstPartyCookies);
 
     // Set third-party cookie if consent is accepted
-    const get3rdCookiesResponse = await HttpConnector.get3rdCookies(cookieEndpoint);
+    const get3rdCookiesResponse = HttpConnector.get3rdCookies(cookieEndpoint);
     console.log('get3rdCookies response:', get3rdCookiesResponse)
 
     if (firstPartyCookies) {
