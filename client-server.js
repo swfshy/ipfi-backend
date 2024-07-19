@@ -183,9 +183,11 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
     console.log('1st Party Cookies:', firstPartyCookies);
 
     // Set third-party cookie if consent is accepted
-    // bisa dikelompokan untuk kategori http connector
     const get3rdCookiesResponse = await HttpConnector.get3rdCookies(cookieEndpoint);
-    console.log('get3rdCookies response:', get3rdCookiesResponse.CookieIOH)
+    console.log('get3rdCookies response:', get3rdCookiesResponse)
+
+    const thirdPartyCookie = get3rdCookiesResponse.CookieIOH;
+    console.log('3rdPartyCookie after get3rdCookiesResponse:', thirdPartyCookie);
 
     if (firstPartyCookies) {
       const additionalData = { 
