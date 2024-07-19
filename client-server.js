@@ -197,10 +197,6 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
 
     console.log('1st Party Cookies:', firstPartyCookies);
 
-    // Set third-party cookie if consent is accepted
-    const get3rdCookiesResponse = HttpConnector.get3rdCookies(cookieEndpoint);
-    console.log('get3rdCookies response:', get3rdCookiesResponse)
-
     if (firstPartyCookies) {
       const additionalData = { 
         documentId: inputId, 
@@ -218,6 +214,14 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
 
       const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
       console.log('postAdditionalDataResponse response:', postAdditionalDataResponse);
+
+      try {
+        // Set third-party cookie if consent is accepted
+        const get3rdCookiesResponse = HttpConnector.get3rdCookies(cookieEndpoint);
+        console.log('get3rdCookies response:', get3rdCookiesResponse)
+      } catch (error) {
+        console.error('error in get3rdCookiesResponse', error);
+      }
 
     } else {
       console.log('First Party Cookies not found');
