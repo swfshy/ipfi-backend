@@ -134,12 +134,10 @@ const HttpConnector = {
       if (response.ok) {
         // Attempt to parse the response as JSON
         try {
-          const responseData = await response;
-          return responseData
+          return await response;
         } catch (error) {
           console.error('Failed get response:', error);
         }
-        console.log('postAdditionalData response:',responseData);
       } else {
         // Handle non-OK response
         console.error('Server Error:', response.statusText);
@@ -188,7 +186,7 @@ const processDefaultHeader = async () => {
 
   // post default header to database
   const postDefaultHeaderResponse = await HttpConnector.postDefaultHeader(backendEndpoint, defaultHeaderData);
-  console.log('postDefaultHeader response:', postDefaultHeaderResponse);
+  console.log('postDefaultHeader response in process:', postDefaultHeaderResponse);
  
   inputId = postDefaultHeaderResponse.documentId;
   console.log('DocumentID after postDefaultHeader:', inputId);
