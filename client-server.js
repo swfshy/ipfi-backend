@@ -130,19 +130,12 @@ const HttpConnector = {
 
       console.log('Raw postAdditionalData response:', response);
 
-      // Check if the response status is OK
-      if (response.ok) {
-        // Attempt to parse the response as JSON
-        try {
-          return await response.json();
-        } catch (error) {
-          console.error('Failed get response:', error);
-        }
-      } else {
-        // Handle non-OK response
-        console.error('Server Error:', response.statusText);
-        throw new Error('Server responded with an error');
-      }
+      // Convert the response to JSON
+      const responseData = await response.json();
+      console.log('Parsed postAdditionalData response:', responseData);
+
+      // Return the processed response data
+      return responseData;
       
     } catch (error) {
       console.error('Error in postAdditionalData:', error);
