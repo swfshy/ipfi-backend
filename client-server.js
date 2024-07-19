@@ -139,6 +139,8 @@ const HttpConnector = {
         method: 'POST',
         credentials: 'include'
       })
+      console.log('Raw response get3rdCookies:', response);
+
       if (response.ok) {
         // Attempt to parse the response as JSON
         try {
@@ -198,9 +200,6 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
     // Set third-party cookie if consent is accepted
     const get3rdCookiesResponse = await HttpConnector.get3rdCookies(cookieEndpoint);
     console.log('get3rdCookies response:', get3rdCookiesResponse)
-
-    const thirdPartyCookie = get3rdCookiesResponse.CookieIOH;
-    console.log('3rdPartyCookie after get3rdCookiesResponse:', thirdPartyCookie);
 
     if (firstPartyCookies) {
       const additionalData = { 
