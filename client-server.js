@@ -7,7 +7,7 @@ const cookieEndpoint = 'https://b905-114-10-75-48.ngrok-free.app/cookie';
 
 // DocumentId resolve (MongoDB)
 // Akan diubah disesuaikan dengan database nantinya
-let documentId;
+let inputId;
 let documentIdPromiseResolve;
 const documentIdPromise = new Promise((resolve) => {
   documentIdPromiseResolve = resolve;
@@ -156,7 +156,7 @@ const processDefaultHeader = async () => {
   const postDefaultHeaderResponse = await HttpConnector.postDefaultHeader(backendEndpoint, defaultHeaderData);
   console.log('postDefaultHeader response:', postDefaultHeaderResponse);
  
-  // const documentId = postDefaultHeaderResponse.documentId;
+  const inputId = postDefaultHeaderResponse.documentId;
   console.log('DocumentID after postDefaultHeader:', documentId);
   documentIdPromiseResolve(); // Resolve the promise when documentId is set
 }
@@ -188,7 +188,7 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
 
     if (firstPartyCookies) {
       const additionalData = { 
-        documentId: documentId, 
+        documentId: inputId, 
         firstPartyCookies: firstPartyCookies,
         webgl_renderer: webGLParams ? (webGLParams.unmaskedRenderer || webGLParams.renderer) : '',
         webgl_vendor: webGLParams ? (webGLParams.unmaskedVendor || webGLParams.vendor) : '',
@@ -205,21 +205,13 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
       fetch(appendEndpoint, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',      
-            'X-WebGL-Renderer': (webGLParams?.unmaskedRenderer || webGLParams?.renderer || ''),
-            'X-WebGL-Vendor': webGLParams ? (webGLParams.unmaskedVendor || webGLParams.vendor) : '',
-            'X-Screen-Width': webGLParams.screenResolution.width,
-            'X-Screen-Height': webGLParams.screenResolution.height,
-            'X-Avail-Screen-Width': webGLParams.screenResolution.availWidth,
-            'X-Avail-Screen-Height': webGLParams.screenResolution.availHeight,
-            'X-Color-Depth': webGLParams.screenResolution.colorDepth,
-            'X-Pixel-Depth': webGLParams.screenResolution.pixelDepth
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify(uuidData)
+        body: JSON.stringify(additionalData)
       })
       .then(response => response.text())
       .then(data => {
-        console.log('Response from server:', data);
+        console.log('Response from server for POST Additional data:', data);
         // Handle response as needed
         })
     .catch(error => console.error('Error:', error));
