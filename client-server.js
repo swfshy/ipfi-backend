@@ -215,13 +215,13 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
       const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
       console.log('postAdditionalDataResponse response:', postAdditionalDataResponse);
 
-      try {
-        // Set third-party cookie if consent is accepted
-        const get3rdCookiesResponse = await HttpConnector.get3rdCookies(cookieEndpoint);
-        console.log('get3rdCookies response:', get3rdCookiesResponse)
-      } catch (error) {
-        console.error('error in get3rdCookiesResponse', error);
-      }
+      // try {
+      //   // Set third-party cookie if consent is accepted
+      //   const get3rdCookiesResponse = await HttpConnector.get3rdCookies(cookieEndpoint);
+      //   console.log('get3rdCookies response:', get3rdCookiesResponse)
+      // } catch (error) {
+      //   console.error('error in get3rdCookiesResponse', error);
+      // }
 
     } else {
       console.log('First Party Cookies not found');
