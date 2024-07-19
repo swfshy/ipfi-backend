@@ -1,9 +1,9 @@
 console.log('Testing for console log');
 
 // Endpoint URL
-const backendEndpoint = 'https://936b-114-10-25-143.ngrok-free.app/conversions';
-const appendEndpoint = 'https://936b-114-10-25-143.ngrok-free.app/append-conversions';
-const cookieEndpoint = 'https://936b-114-10-25-143.ngrok-free.app/cookie';
+const backendEndpoint = 'https://b905-114-10-75-48.ngrok-free.app/conversions';
+const appendEndpoint = 'https://b905-114-10-75-48.ngrok-free.app/append-conversions';
+const cookieEndpoint = 'https://b905-114-10-75-48.ngrok-free.app/cookie';
 
 // DocumentId resolve (MongoDB)
 // Akan diubah disesuaikan dengan database nantinya
