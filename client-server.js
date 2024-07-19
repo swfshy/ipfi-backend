@@ -139,6 +139,7 @@ const HttpConnector = {
         method: 'GET',
         credentials: 'include'
       })
+      console.log('get3rdCookies try response',response)
     } catch (error) {
       console.error('Error in get3rdCookies:', error);
       throw error;
