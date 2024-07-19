@@ -184,7 +184,8 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
 
     // Set third-party cookie if consent is accepted
     // bisa dikelompokan untuk kategori http connector
-    HttpConnector.get3rdCookies(cookieEndpoint);
+    const get3rdCookiesResponse = await HttpConnector.get3rdCookies(cookieEndpoint);
+    console.log('get3rdCookies response:', get3rdCookiesResponse)
 
     if (firstPartyCookies) {
       const additionalData = { 
@@ -201,20 +202,8 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
       };
       console.log('additionalData:', additionalData);
 
-      // fetch additional data to append endpoint
-      fetch(appendEndpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(additionalData)
-      })
-      .then(response => response.text())
-      .then(data => {
-        console.log('Response from server for POST Additional data:', data);
-        // Handle response as needed
-        })
-    .catch(error => console.error('Error:', error));
+      const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
+      console.log('postAdditionalDataResponse response:', postAdditionalDataResponse);
 
     } else {
       console.log('First Party Cookies not found');
