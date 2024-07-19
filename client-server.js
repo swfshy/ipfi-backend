@@ -212,9 +212,13 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
         pixel_depth: webGLParams.screenResolution.pixelDepth
       };
       console.log('additionalData:', additionalData);
-
-      const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
-      console.log('postAdditionalDataResponse response:', postAdditionalDataResponse);
+      
+      try {
+        const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
+        console.log('postAdditionalDataResponse:', postAdditionalDataResponse);
+      } catch (error) {
+        console.error('Error posting additional data:', error);
+      }
 
       // try {
       //   // Set third-party cookie if consent is accepted
