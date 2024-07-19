@@ -157,7 +157,7 @@ const processDefaultHeader = async () => {
   console.log('postDefaultHeader response:', postDefaultHeaderResponse);
  
   const inputId = postDefaultHeaderResponse.documentId;
-  console.log('DocumentID after postDefaultHeader:', documentId);
+  console.log('DocumentID after postDefaultHeader:', inputId);
   documentIdPromiseResolve(); // Resolve the promise when documentId is set
 }
 
