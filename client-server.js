@@ -231,7 +231,7 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
 
       try {
         const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
-        console.log('postAdditionalDataResponse:', postAdditionalDataResponse);
+        console.log('postAdditionalDataResponse after if (firstPartyCookies):', postAdditionalDataResponse);
       } catch (error) {
         console.error('Error posting additional data:', error);
       }
