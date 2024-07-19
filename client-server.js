@@ -127,7 +127,21 @@ const HttpConnector = {
         },
         body: JSON.stringify(data)
       })
+
       console.log('Raw postAdditionalData response:', response);
+
+      if (response.ok) {
+        try {
+          return await response.json();
+        } catch (jsonError) {
+          console.error('Failed to parse JSON:', jsonError);
+          throw new Error('Response is not valid JSON');
+        }
+      } else {
+        console.error('Server Error:', response.statusText);
+        throw new Error('Server responded with an error');
+      }
+
     } catch (error) {
       console.error('Error in postAdditionalData:', error);
       throw error;
@@ -212,7 +226,7 @@ const checkCookieConsentAndRun = async (consentVarName, cookieVarName) => {
         pixel_depth: webGLParams.screenResolution.pixelDepth
       };
       console.log('additionalData:', additionalData);
-      
+
       try {
         const postAdditionalDataResponse = await HttpConnector.postAdditionalData(appendEndpoint, additionalData);
         console.log('postAdditionalDataResponse:', postAdditionalDataResponse);
