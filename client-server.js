@@ -139,7 +139,19 @@ const HttpConnector = {
         method: 'POST',
         credentials: 'include'
       })
-      console.log('get3rdCookies try response',response)
+      if (response.ok) {
+        // Attempt to parse the response as JSON
+        try {
+          return await response.json();
+        } catch (jsonError) {
+          console.error('Failed to parse JSON:', jsonError);
+          throw new Error('Response is not valid JSON');
+        }
+      } else {
+        // Handle non-OK response
+        console.error('Server Error:', response.statusText);
+        throw new Error('Server responded with an error');
+      }
     } catch (error) {
       console.error('Error in get3rdCookies:', error);
       throw error;
