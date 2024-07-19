@@ -136,7 +136,7 @@ const HttpConnector = {
   async get3rdCookies(url){
     try {
       const response = await fetch(url, {
-        method: 'GET',
+        method: 'POST',
         credentials: 'include'
       })
       console.log('get3rdCookies try response',response)
